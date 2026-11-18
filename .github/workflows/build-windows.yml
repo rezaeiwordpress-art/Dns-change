@@ -45,6 +45,9 @@ jobs:
       - name: Run TypeScript and frontend checks
         run: npm run lint
 
+      - name: Build frontend assets
+        run: npm run build
+
       - name: Run Rust unit tests
         run: cargo test --manifest-path src-tauri/Cargo.toml
 

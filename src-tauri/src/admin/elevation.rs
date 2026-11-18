@@ -613,6 +613,10 @@ pub fn handle_elevated_cli_if_present() -> Option<i32> {
 }
 
 pub fn handle_elevated_cli_args(args: &[String]) -> i32 {
+    handle_elevated_cli_args_with_elevation(args, RealWindowsElevation::is_process_elevated())
+}
+
+fn handle_elevated_cli_args_with_elevation(args: &[String], is_elevated: bool) -> i32 {
     let command = match parse_elevated_cli_args(args) {
         Ok(cmd) => cmd,
         Err(err) => {
@@ -621,7 +625,7 @@ pub fn handle_elevated_cli_args(args: &[String]) -> i32 {
         }
     };
 
-    if !RealWindowsElevation::is_process_elevated() {
+    if !is_elevated {
         let err = AppError::AdminAccessDenied {
             detail: "Helper process is not running with elevated Administrator token".into(),
         };
@@ -951,7 +955,7 @@ mod tests {
             "1.0.0.1".into(),
         ];
 
-        let exit = handle_elevated_cli_args(&args);
+        let exit = handle_elevated_cli_args_with_elevation(&args, false);
         assert_eq!(exit, 10);
         assert!(matches!(
             exit_code_to_app_error(exit as u32),
