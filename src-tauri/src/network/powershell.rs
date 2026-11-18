@@ -1210,8 +1210,9 @@ mod tests {
             GET_IPV6_DNS_STATE_SCRIPT,
             RESTORE_IPV6_DNS_EMERGENCY_SCRIPT,
         ] {
+            let normalized = script.replace("\r\n", "\n");
             assert!(
-                script.contains(expected),
+                normalized.contains(expected),
                 "Expected PowerShell script to wrap UTF-8 output encoding setup in try/catch"
             );
         }
