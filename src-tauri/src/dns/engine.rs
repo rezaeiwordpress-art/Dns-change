@@ -1375,6 +1375,7 @@ mod tests {
         );
 
         // Restore failure returns RestoreFailed and preserves backup
+        backend.state.lock().unwrap().fail_set_dns = true;
         let restore_err = engine.restore_dns(guid).await.unwrap_err();
         assert!(matches!(restore_err, AppError::RestoreFailed { .. }));
         assert!(store.get_status(guid).unwrap().has_backup);
